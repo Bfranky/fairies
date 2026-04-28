@@ -9,7 +9,7 @@ const menuItems = [
     category: "Burgers",
     price: "₦2,500",
     desc: "Juicy beef patty, cheddar cheese, lettuce, tomato & special sauce",
-    emoji: "🍔",
+    image: "https://www.seriouseats.com/thmb/5aIbgxqxl40-bSCMFOFsegtQDog=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/smashburger-recipe-hero-2_1-46ccdb3e7b9a477fbb4d7dc9c2db1185.jpg",
     badge: "Best Seller",
   },
   {
@@ -17,7 +17,7 @@ const menuItems = [
     category: "Burgers",
     price: "₦3,500",
     desc: "Two flame-grilled patties, bacon, caramelised onions & BBQ sauce",
-    emoji: "🍔",
+    image: "https://www.southernliving.com/thmb/LuRKzWB6R_7kBLlolQp1TrgQllA=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/double-smash-burger-2000-99a4a7b75b264bd0a4b0e43f7cda026e.jpg",
     badge: null,
   },
   {
@@ -25,7 +25,7 @@ const menuItems = [
     category: "Chicken",
     price: "₦2,800",
     desc: "Marinated crispy fried chicken with our signature pepper blend",
-    emoji: "🍗",
+    image: "https://www.africanbites.com/wp-content/uploads/2014/05/IMG_8669-2.jpg",
     badge: "🔥 Hot",
   },
   {
@@ -33,7 +33,7 @@ const menuItems = [
     category: "Chicken",
     price: "₦2,200",
     desc: "Tender grilled chicken strips with coleslaw in a soft tortilla wrap",
-    emoji: "🌮",
+    image: "https://insanelygoodrecipes.com/wp-content/uploads/2023/08/Homemade-Grilled-Chicken-Wrap-with-Salad.jpg",
     badge: null,
   },
   {
@@ -41,7 +41,7 @@ const menuItems = [
     category: "Chicken",
     price: "₦3,000",
     desc: "Slow-cooked chicken thighs in rich Nigerian pepper sauce",
-    emoji: "🍗",
+    image: "https://www.africanbites.com/wp-content/uploads/2023/01/Peppered-Chicken-10.jpg",
     badge: "Chef's Pick",
   },
   {
@@ -49,7 +49,7 @@ const menuItems = [
     category: "Sides",
     price: "₦800",
     desc: "Golden crispy fries dusted with our house seasoning blend",
-    emoji: "🍟",
+    image: "https://www.recipetineats.com/thmb/6V2NKPBG5lTbK7X3TXRe3dSVn_c=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/French-fries-recipe_2-SQ.jpg",
     badge: null,
   },
   {
@@ -57,7 +57,7 @@ const menuItems = [
     category: "Sides",
     price: "₦600",
     desc: "Fresh creamy coleslaw with a hint of citrus",
-    emoji: "🥗",
+    image: "https://www.tasteofhome.com/wp-content/uploads/2018/01/Classic-Coleslaw_EXPS_TOHD24_9823_EricKleinberg_3.jpg",
     badge: null,
   },
   {
@@ -65,7 +65,7 @@ const menuItems = [
     category: "Sides",
     price: "₦1,200",
     desc: "Smoky, perfectly seasoned Nigerian party jollof rice",
-    emoji: "🍛",
+    image: "https://sisijemimah.com/wp-content/uploads/2015/08/party-jollof-rice-sisijemimah.com-3.jpg",
     badge: "Nigerian Fave",
   },
   {
@@ -73,7 +73,7 @@ const menuItems = [
     category: "Drinks",
     price: "₦400",
     desc: "Choice of Coke, Fanta, Sprite or Malt – served ice cold",
-    emoji: "🥤",
+    image: "https://images.unsplash.com/photo-1581636625402-29b2a704ef13?w=600&q=80",
     badge: null,
   },
   {
@@ -81,7 +81,7 @@ const menuItems = [
     category: "Drinks",
     price: "₦500",
     desc: "Refreshing hibiscus drink with ginger and pineapple flavours",
-    emoji: "🍹",
+    image: "https://lafriquemarket.com/wp-content/uploads/2021/12/zobo-drink-hibiscus-flower-scaled.jpg",
     badge: "Local Fave",
   },
   {
@@ -89,7 +89,7 @@ const menuItems = [
     category: "Specials",
     price: "₦4,500",
     desc: "Burger + fries + drink — the perfect value meal deal",
-    emoji: "🎉",
+    image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80",
     badge: "Value Deal",
   },
   {
@@ -97,13 +97,22 @@ const menuItems = [
     category: "Specials",
     price: "₦9,800",
     desc: "4 chicken pieces, large fries, jollof rice & 4 drinks",
-    emoji: "👨‍👩‍👧‍👦",
+    image: "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=600&q=80",
     badge: "Popular",
   },
 ];
 
+const fallbackEmojis: Record<string, string> = {
+  Burgers: "🍔",
+  Chicken: "🍗",
+  Sides: "🍟",
+  Drinks: "🥤",
+  Specials: "🎉",
+};
+
 export default function Menu() {
   const [active, setActive] = useState("All");
+  const [imgErrors, setImgErrors] = useState<Record<string, boolean>>({});
 
   const filtered =
     active === "All"
@@ -214,7 +223,6 @@ export default function Menu() {
                 transition: "all 0.3s",
                 cursor: "default",
                 border: "1px solid rgba(0,0,0,0.06)",
-                animationDelay: `${i * 0.05}s`,
               }}
               onMouseEnter={(e) => {
                 (e.currentTarget as HTMLDivElement).style.transform = "translateY(-4px)";
@@ -227,19 +235,63 @@ export default function Menu() {
                   "0 2px 20px rgba(0,0,0,0.06)";
               }}
             >
-              {/* Emoji card top */}
+              {/* Image */}
               <div
                 style={{
-                  height: "120px",
-                  background:
-                    "linear-gradient(135deg, #1a1a1a 0%, #2d1a0e 100%)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "52px",
+                  height: "180px",
+                  background: "linear-gradient(135deg, #1a1a1a 0%, #2d1a0e 100%)",
                   position: "relative",
+                  overflow: "hidden",
                 }}
               >
+                {!imgErrors[item.name] ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    onError={() =>
+                      setImgErrors((prev) => ({ ...prev, [item.name]: true }))
+                    }
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      display: "block",
+                      transition: "transform 0.5s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      (e.currentTarget as HTMLImageElement).style.transform = "scale(1.07)";
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.currentTarget as HTMLImageElement).style.transform = "scale(1)";
+                    }}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "60px",
+                    }}
+                  >
+                    {fallbackEmojis[item.category] ?? "🍽️"}
+                  </div>
+                )}
+
+                {/* Gradient overlay */}
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    background:
+                      "linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 55%)",
+                    pointerEvents: "none",
+                  }}
+                />
+
                 {item.badge && (
                   <span
                     style={{
@@ -250,16 +302,16 @@ export default function Menu() {
                       color: "white",
                       fontSize: "10px",
                       fontWeight: "700",
-                      padding: "3px 8px",
+                      padding: "4px 10px",
                       borderRadius: "3px",
                       letterSpacing: "0.5px",
                       textTransform: "uppercase",
+                      zIndex: 2,
                     }}
                   >
                     {item.badge}
                   </span>
                 )}
-                {item.emoji}
               </div>
 
               {/* Content */}
